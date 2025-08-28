@@ -28,6 +28,7 @@ const PokemonForm: React.FC<Props> = ({
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<Pokemon | null>(null)
   const [showMore, setShowMore] = useState(false)
+
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -117,7 +118,7 @@ const PokemonForm: React.FC<Props> = ({
           data-testid="pokemon-result"
           style={styles.card}
         >
-          <div style={styles.row}>
+          <div id="pokemon-result-row" data-testid="pokemon-result-row" style={styles.row}>
             {data.sprites?.front_default && (
               <img
                 id="pokemon-image"
@@ -129,7 +130,7 @@ const PokemonForm: React.FC<Props> = ({
                 style={styles.img}
               />
             )}
-            <div style={{ flex: 1 }}>
+            <div id="pokemon-summary" data-testid="pokemon-summary" style={{ flex: 1 }}>
               <strong
                 id="pokemon-name"
                 data-testid="pokemon-name"
@@ -145,7 +146,7 @@ const PokemonForm: React.FC<Props> = ({
                 Tipos:{' '}
                 {(data.types || []).map((t) => t.type?.name).join(', ') || '—'}
               </div>
-              <div style={styles.meta}>
+              <div id="pokemon-meta" data-testid="pokemon-meta" style={styles.meta}>
                 {data.height != null && (
                   <span id="pokemon-height" data-testid="pokemon-height">
                     Altura: {data.height}
@@ -214,8 +215,16 @@ const PokemonDetailsModal: React.FC<{
         onClick={(e) => e.stopPropagation()}
         style={styles.modal}
       >
-        <div style={styles.modalHeader}>
-          <h2 id="pokemon-details-title" style={styles.modalTitle}>
+        <div
+          id="pokemon-details-header"
+          data-testid="pokemon-details-header"
+          style={styles.modalHeader}
+        >
+          <h2
+            id="pokemon-details-title"
+            data-testid="pokemon-details-title"
+            style={styles.modalTitle}
+          >
             #{pokemon.id} {pokemon.name}
           </h2>
           <button
@@ -234,8 +243,12 @@ const PokemonDetailsModal: React.FC<{
           data-testid="pokemon-details-content"
           style={styles.modalContent}
         >
-          {/* Imagem */}
-          <div style={styles.hero}>
+          {/* Imagem + Infos */}
+          <div
+            id="pokemon-details-hero"
+            data-testid="pokemon-details-hero"
+            style={styles.hero}
+          >
             {art && (
               <img
                 id="pokemon-details-image"
@@ -245,8 +258,15 @@ const PokemonDetailsModal: React.FC<{
                 style={styles.heroImg}
               />
             )}
-            <div>
-              <div style={styles.grid}>
+            <div
+              id="pokemon-details-info"
+              data-testid="pokemon-details-info"
+            >
+              <div
+                id="pokemon-details-grid"
+                data-testid="pokemon-details-grid"
+                style={styles.grid}
+              >
                 <InfoItem
                   label="Base XP"
                   value={String((pokemon as any).base_experience ?? '—')}
@@ -272,7 +292,7 @@ const PokemonDetailsModal: React.FC<{
 
           {/* Habilidades */}
           <Section title="Habilidades">
-            <div style={styles.chips}>
+            <div id="pokemon-abilities" data-testid="pokemon-abilities" style={styles.chips}>
               {(pokemon.abilities || []).map((a, i) => (
                 <span
                   key={i}
@@ -285,13 +305,14 @@ const PokemonDetailsModal: React.FC<{
                 </span>
               ))}
               {(pokemon.abilities || []).length === 0 && (
-                <span style={styles.muted}>—</span>
+                <span id="abilities-empty" data-testid="abilities-empty" style={styles.muted}>—</span>
               )}
             </div>
           </Section>
 
+          {/* Atributos */}
           <Section title="Atributos">
-            <div style={styles.stats}>
+            <div id="pokemon-stats" data-testid="pokemon-stats" style={styles.stats}>
               {(pokemon.stats || []).map((s, i) => (
                 <div
                   key={i}
@@ -299,27 +320,46 @@ const PokemonDetailsModal: React.FC<{
                   id={`stat-${s.stat.name}`}
                   data-testid={`stat-${s.stat.name}`}
                 >
-                  <span style={styles.statLabel}>{s.stat.name}</span>
-                  <div style={styles.statBarWrap} aria-hidden>
+                  <span
+                    style={styles.statLabel}
+                    id={`stat-label-${s.stat.name}`}
+                    data-testid={`stat-label-${s.stat.name}`}
+                  >
+                    {s.stat.name}
+                  </span>
+                  <div
+                    style={styles.statBarWrap}
+                    id={`stat-barwrap-${s.stat.name}`}
+                    data-testid={`stat-barwrap-${s.stat.name}`}
+                    aria-hidden
+                  >
                     <div
                       style={{
                         ...styles.statBar,
                         width: `${Math.min(100, s.base_stat)}%`,
                       }}
+                      id={`stat-bar-${s.stat.name}`}
+                      data-testid={`stat-bar-${s.stat.name}`}
                     />
                   </div>
-                  <span style={styles.statValue}>{s.base_stat}</span>
+                  <span
+                    style={styles.statValue}
+                    id={`stat-value-${s.stat.name}`}
+                    data-testid={`stat-value-${s.stat.name}`}
+                  >
+                    {s.base_stat}
+                  </span>
                 </div>
               ))}
               {(pokemon.stats || []).length === 0 && (
-                <span style={styles.muted}>—</span>
+                <span id="stats-empty" data-testid="stats-empty" style={styles.muted}>—</span>
               )}
             </div>
           </Section>
 
           {/* Golpes (limitado para desempenho) */}
           <Section title="Golpes">
-            <div style={styles.listWrap}>
+            <div id="pokemon-moves" data-testid="pokemon-moves" style={styles.listWrap}>
               {(pokemon.moves || []).slice(0, 30).map((m, i) => (
                 <span
                   key={i}
@@ -331,12 +371,16 @@ const PokemonDetailsModal: React.FC<{
                 </span>
               ))}
               {(pokemon.moves?.length || 0) > 30 && (
-                <span style={styles.muted}>
+                <span
+                  id="moves-more"
+                  data-testid="moves-more"
+                  style={styles.muted}
+                >
                   … e mais {pokemon.moves!.length - 30}
                 </span>
               )}
               {(pokemon.moves || []).length === 0 && (
-                <span style={styles.muted}>—</span>
+                <span id="moves-empty" data-testid="moves-empty" style={styles.muted}>—</span>
               )}
             </div>
           </Section>
@@ -349,22 +393,54 @@ const PokemonDetailsModal: React.FC<{
 const InfoItem: React.FC<{ label: string; value: React.ReactNode }> = ({
   label,
   value,
-}) => (
-  <div style={styles.infoItem}>
-    <span style={styles.infoLabel}>{label}</span>
-    <span style={styles.infoValue}>{value}</span>
-  </div>
-)
+}) => {
+  const slug = label.toLowerCase().replace(/\s+/g, '-')
+  return (
+    <div
+      style={styles.infoItem}
+      id={`info-${slug}`}
+      data-testid={`info-${slug}`}
+    >
+      <span
+        style={styles.infoLabel}
+        id={`info-label-${slug}`}
+        data-testid={`info-label-${slug}`}
+      >
+        {label}
+      </span>
+      <span
+        style={styles.infoValue}
+        id={`info-value-${slug}`}
+        data-testid={`info-value-${slug}`}
+      >
+        {value}
+      </span>
+    </div>
+  )
+}
 
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({
   title,
   children,
-}) => (
-  <section style={{ marginTop: 16 }}>
-    <h3 style={styles.sectionTitle}>{title}</h3>
-    {children}
-  </section>
-)
+}) => {
+  const slug = title.toLowerCase().replace(/\s+/g, '-')
+  return (
+    <section
+      style={{ marginTop: 16 }}
+      id={`section-${slug}`}
+      data-testid={`section-${slug}`}
+    >
+      <h3
+        style={styles.sectionTitle}
+        id={`section-title-${slug}`}
+        data-testid={`section-title-${slug}`}
+      >
+        {title}
+      </h3>
+      {children}
+    </section>
+  )
+}
 
 const styles: Record<string, React.CSSProperties> = {
   container: { maxWidth: 640, margin: '0 auto', padding: 12 },

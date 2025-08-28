@@ -63,7 +63,7 @@
     "vtex.tab-layout": "0.x",
     "vtex.condition-layout": "2.x",
     "vtex.css-handles": "1.x",
-    "acctglobal.pokemon-app-form": "0.0.8"
+    "acctglobal.pokemon-app-form": "0.0.9"
   },
   "peerDependencies": {
     "vtex.reviews-and-ratings": "3.x"
